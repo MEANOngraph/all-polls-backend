@@ -1,0 +1,8 @@
+{
+    "name": "api.all_poll",
+    "script": "bin/www",
+    "DB_CONNECTION": "mongodb://127.0.0.1:27017/all_poll",
+    "JWT_SECRET": "secret",
+    "PORT": "3001"
+  }
+  
