@@ -1,6 +1,6 @@
 var pollsModel = require('../models/polls');
 
-const getAllPolls = async(userId)=>{
+const getAllPolls = async (userId) => {
     try{
         await pollsModel.find({ userId: userId }).then(async (err, polls) => {
             if(!err){
@@ -16,7 +16,7 @@ const getAllPolls = async(userId)=>{
     }
 }
 
-const createUserPoll = async(userId, question, options)=>{
+const createUserPoll = async (userId, question, options) => {
     try{
         await pollsModel.insertOne({ 
             userId: userId,
@@ -37,7 +37,7 @@ const createUserPoll = async(userId, question, options)=>{
     }
 }
 
-const changeStatusOfpoll = async(pollId)=>{
+const changeStatusOfpoll = async (pollId) => { 
     try{
         await pollsModel.findOneAndUpdate({_id: pollId}, {status: false}).then(async (err, res) => {
             if(!err){
@@ -53,8 +53,25 @@ const changeStatusOfpoll = async(pollId)=>{
     }
 }
 
+const getPollDetails = async (pollId) => {
+    try{
+        await pollsModel.findOne({ _id: pollId }).then(async (err, poll) => {
+            if(!err){
+                return poll;
+            }else{
+                console.error(err);
+                return;
+            }
+        })
+    }catch(err){
+        console.error(err);
+        return;
+    }
+}
+
 module.exports={
     getAllPolls,
     createUserPoll,
-    changeStatusOfpoll
+    changeStatusOfpoll,
+    getPollDetails
 }

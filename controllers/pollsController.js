@@ -8,12 +8,12 @@ const getPollsList = async(req, res, next)=>{
         if(userId){
             const response = await pollsService.getAllPolls(userId);
             if(response){
-                res.send(200).json(response);
+                res.send(200).json({ success: true, response: response});
             }else{
-                res.send(400).json("Someting went wrong!");
+                res.send(200).json({ success: false, msg: 'Something went wrong!'});
             }
         }else{
-            res.send(400).json("Invalid user Id.");
+            res.send(400).json({ success: false, msg: 'Invalid user Id.'});
         }
     }catch (error) {
         console.error(error);
@@ -40,9 +40,9 @@ const createPoll = async(req, res, next)=>{
             } else {
                 const response = pollsService.createUserPoll(userId, question, options);
                 if(response){
-                    res.send(200).json("Poll created succesfully.");
+                    res.send(200).json({ success: true, msg: 'Poll created succesfully.'});
                 }else{
-                    res.send(400).json("Someting went wrong!");
+                    res.send(200).json({ success: false, msg: 'Something went wrong!'});
                 }
             }
         }).catch( err => console.log(err))
@@ -58,12 +58,12 @@ const changePollStatus = async(req, res, next)=>{
         if(pollId){
             const response = await pollsService.changeStatusOfpoll(pollId);
             if(response){
-                res.send(200).json("This poll is no longer active.");
+                res.send(200).json({ success: true, msg: 'This poll is no longer active.'});
             }else{
-                res.send(400).json("Someting went wrong!");
+                res.send(200).json({ success: false, msg: 'Something went wrong!'});
             }
         }else{
-            res.send(400).json("Invalid poll Id.");
+            res.send(400).json({ success: false, msg: 'Invalid poll Id!'});
         }
     }catch (error) {
         console.error(error);
@@ -72,8 +72,28 @@ const changePollStatus = async(req, res, next)=>{
 
 }
 
+const getPoll = async(req, res, next)=>{
+    try{
+        const pollId = req.params.pollId;
+        if(pollId){
+            const response = await pollsService.getPollDetails(pollId);
+            if(response){
+                res.send(200).json({ success: true, response: response});
+            }else{
+                res.send(200).json({ success: false, msg: 'Something went wrong!'});
+            }
+        }else{
+            res.send(400).json({ success: false, msg: 'Invalid poll Id!'});
+        }
+    }catch (error) {
+        console.error(error);
+        res.status(200).json({ success: false, msg: 'Something went wrong!'});
+    }
+}
+
 module.exports={
     getPollsList,
     createPoll,
-    changePollStatus
+    changePollStatus,
+    getPoll
 }
