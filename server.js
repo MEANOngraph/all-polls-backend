@@ -7,15 +7,12 @@
  var app = require('./app');
  var debug = require('debug')('poll-backend:server');
  var http = require('http');
-
+ var config = require('./config/config.json')
 const mongoose = require("mongoose");
 
-const username = "lavpalve-ongraph";
-const password = "sgThPafzk2diQt0W";
-const cluster = "cluster0";
-const dbname = "All-Poll";
 
-mongoose.connect(`mongodb+srv://${username}:${password}@${cluster}.r8byurf.mongodb.net/${dbname}?retryWrites=true&w=majority`,
+
+mongoose.connect(`mongodb+srv://${config.Username}:${config.Password}@${config.Cluster}.r8byurf.mongodb.net/${config.DBname}?retryWrites=true&w=majority`,
   {
     useNewUrlParser: true,
     // useFindAndModify: false,
@@ -34,7 +31,7 @@ db.once("open", function () {
   * Get port from environment and store in Express.
   */
  
- var port = normalizePort(process.env.PORT || '3000');
+ var port = normalizePort(config.PORT || '3000');
  app.set('port', port);
  
  /**
