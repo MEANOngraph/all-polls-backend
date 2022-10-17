@@ -1,25 +1,27 @@
 var userModel = require('../models/user');
 
-const addUser = async(user)=>{
+const addUser = async(user, res)=>{
+    const response = userModel.findOne({email: user.email});
+    if(response){
+        return res.status(200).json({ success: false, msg: 'User email is already exist.'});
+    }
     await user.save().then(async (registerUser) => {
         if (registerUser) {
             JwtSign({ email: registerUser.email }, async (err, token) => {
                 if (err) {
-                    res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in token error' });
-                } else {
-                    res.status(200).json({ success: true, msg: 'User registration successfully.', token: token });
+                    return res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in token error' });
                 }
+                return res.status(200).json({ success: true, msg: 'User registration successfully.', token: token });
             })
-        } else {
-            res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'error in User Registration' });
         }
+        res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'error in User Registration' });
     }).catch((error) => {
-        res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in save user info' });
-    })
+        res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in save user info', error: error });
+    })        
 }
 
-const findUser = async(email, password)=>{
-    await User.findOne({ email: email }).then(async (user) => {
+const verifyUser = async(email, password, res)=>{
+    await userModel.findOne({ email: email }).then(async (user) => {
         if (user) {
             await bcrypt.compare(password, user.password).then((isMatch) => {
                 if (isMatch) {
@@ -40,11 +42,11 @@ const findUser = async(email, password)=>{
             res.status(200).json({ success: false, msg: 'Your credentails could be wrong!', type: 'no amin email match' });
         }
     }).catch((error) => {
-        res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in find user catch' });
+        res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in find user catch', error: error });
     });
 }
 
 module.exports={
     addUser,
-    findUser
+    verifyUser
 }

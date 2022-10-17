@@ -1,10 +1,11 @@
 var User = require('../models/user');
 var userService = require('../services/user');
 var validator = require('../helpers/validate');
+var bcrypt = require('bcrypt');
 
 const userRegistration = async (req, res, next)=>{
     try {
-        let { fullname, email, password } = req.body;
+        let { fullName, email, password } = req.body;
         const validationRule = {
             "fullName": "required|string",
             "email": "required|string|email",
@@ -25,11 +26,11 @@ const userRegistration = async (req, res, next)=>{
                 let salt = await bcrypt.genSaltSync(10);
                 let userPassword = await bcrypt.hashSync(password, salt);
                 let user = new User({
-                    fullName: fullname,
+                    fullName: fullName,
                     email: email,
                     password: userPassword,
                 });
-                userService.addUser(user);
+                userService.addUser(user, res);
             }
         }).catch( err => console.log(err))
 
@@ -56,7 +57,7 @@ const userLogin = async(req, res, next)=>{
                         data: err
                     });
             } else {
-                userService.addUser(email, password);
+                userService.verifyUser(email, password, res);
             }
         }).catch( err => console.log(err))
         

@@ -7,6 +7,28 @@
  var app = require('./app');
  var debug = require('debug')('poll-backend:server');
  var http = require('http');
+
+const mongoose = require("mongoose");
+
+const username = "lavpalve-ongraph";
+const password = "sgThPafzk2diQt0W";
+const cluster = "cluster0";
+const dbname = "All-Poll";
+
+mongoose.connect(`mongodb+srv://${username}:${password}@${cluster}.r8byurf.mongodb.net/${dbname}?retryWrites=true&w=majority`,
+  {
+    useNewUrlParser: true,
+    // useFindAndModify: false,
+    useUnifiedTopology: true
+  }
+);
+  mongoose.set('debug', true);
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", function () {
+  console.log("Connected successfully");
+});
  
  /**
   * Get port from environment and store in Express.
