@@ -8,13 +8,11 @@ const getPollsList = async(req, res, next)=>{
         if(userId){
             const response = await pollsService.getAllPolls(userId);
             if(response){
-                res.send(200).json(response);
-            }else{
-                res.send(400).json("Someting went wrong!");
+                return res.status(200).json({success: true, msg: 'Polls data fetch succesfully.', response: response});
             }
-        }else{
-            res.send(400).json("Invalid user Id.");
+            return res.status(200).json({success: false, msg: 'Something went wrong!'});
         }
+        res.status(400).json({success: false, msg: 'Invalid user Id.'});
     }catch (error) {
         console.error(error);
         res.status(200).json({ success: false, msg: 'Something went wrong!'});
@@ -27,26 +25,24 @@ const createPoll = async(req, res, next)=>{
         const validationRule = {
             "userId": "required|string",
             "question": "required|string",
+            "options": "required"
         };
 
         await validator(req.body, validationRule, {}, async (err, status) => {
             if (err) {
-                res.status(412)
+                return res.status(412)
                     .send({
                         success: false,
                         message: 'Validation failed!',
                         data: err
                     });
-            } else {
-                const response = pollsService.createUserPoll(userId, question, options);
-                if(response){
-                    res.send(200).json("Poll created succesfully.");
-                }else{
-                    res.send(400).json("Someting went wrong!");
-                }
+            } 
+            const response = pollsService.createUserPoll(userId, question, options);
+            if(response){
+                return res.status(200).json({ success: true, msg: 'Poll created succesfully.'});
             }
-        }).catch( err => console.log(err))
-        
+            return res.status(400).json({ success: false, msg: 'Something went wrong!'});
+        }).catch( err => console.log(err))   
     } catch (error) {
         console.error(error);
         res.status(200).json({ success: false, msg: 'Something went wrong!'});
@@ -58,13 +54,11 @@ const changePollStatus = async(req, res, next)=>{
         if(pollId){
             const response = await pollsService.changeStatusOfpoll(pollId);
             if(response){
-                res.send(200).json("This poll is no longer active.");
-            }else{
-                res.send(400).json("Someting went wrong!");
+                return res.status(200).json({ success: true, msg: 'This poll is no longer active.'});
             }
-        }else{
-            res.send(400).json("Invalid poll Id.");
+            return res.status(200).json({ success: false, msg: 'Something went wrong!'});
         }
+        res.status(400).json({ success: false, msg: 'Invalid poll id!'});
     }catch (error) {
         console.error(error);
         res.status(200).json({ success: false, msg: 'Something went wrong!'});
@@ -72,8 +66,83 @@ const changePollStatus = async(req, res, next)=>{
 
 }
 
+const getPollDetails = async (req, res, next) => {
+    try{
+        const pollId = req.params.pollId;
+        if(pollId){
+            const response = await pollsService.getPollDetails(pollId);
+            console.log(response);
+            if(response){
+                return res.status(200).json({success: true, msg: 'Poll data fetch succesfully.', response: response});
+            }
+            return res.status(400).json({ success: false, msg: 'Something went wrong!'});
+        }
+        res.status(200).json({ success: false, msg: 'Invalid poll id!'});
+    }catch (error) {
+        console.error(error);
+        res.status(200).json({ success: false, msg: 'Something went wrong!'});
+    }
+}
+
+const submitPoll = async (req, res, next) =>{
+    try{
+        const { userId, pollId, selectOptId} = req.body;
+
+        if(pollId){
+            const response = await pollsService.submitPollAns(userId, pollId, selectOptId);
+            if(response){
+                return res.status(200).json({success: true, msg: 'Poll submited succesfully.'});
+            }
+            return res.status(400).json({ success: false, msg: 'Something went wrong!'});
+        }
+        res.status(400).json({ success: false, msg: 'Invalid poll id!'});
+    }catch (error) {
+        console.error(error);
+        res.status(200).json({ success: false, msg: 'Something went wrong!'});
+    }
+}
+
+const deletePoll = async (req, res, next) => {
+    try{
+        const pollId = req.params.pollId;
+        if(pollId){
+            const response = await pollsService.deletePoll(pollId);
+            if(response){
+                return res.status(200).json({ success: true, msg: 'Poll deleted succesfully.'});
+            }
+            return res.status(200).json({ success: false, msg: 'Something went wrong!'});
+        }
+        res.status(400).json({ success: false, msg: 'Invalid poll Id.'});
+    }catch (error) {
+        console.error(error);
+        res.status(200).json({ success: false, msg: 'Something went wrong!'});
+    }
+}
+
+const searchPolls = async (req, res, next) => {
+    try{
+        const query = req.params.query;
+        if(query){
+            const response = await pollsService.searchPollsData(query);
+            console.log('resssssss', response);
+            if(response){
+                return res.status(200).json({success: true, msg: 'Search result fetch succesfully.', response: response});
+            }
+             return res.status(200).json({ success: false, msg: 'Something went wrong!'});
+        }
+        res.status(400).json({ success: false, msg: 'Invalid input!'});
+    }catch (error) {
+        console.error(error);
+        res.status(200).json({ success: false, msg: 'Something went wrong!'});
+    }
+}
+
 module.exports={
     getPollsList,
     createPoll,
-    changePollStatus
+    changePollStatus,
+    getPollDetails,
+    submitPoll,
+    deletePoll,
+    searchPolls
 }
