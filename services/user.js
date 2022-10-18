@@ -1,5 +1,6 @@
 var userModel = require('../models/user');
 const bcrypt = require('bcrypt');
+const JwtSign = require("../lib/jwt.service");
 
 const addUser = async(user, res)=>{
     const response = await userModel.findOne({email: user.email});
@@ -25,7 +26,6 @@ const verifyUser = async(email, password, res)=>{
     await userModel.findOne({ email: email }).then(async (user) => {
         if (user) {
             await bcrypt.compare(password, user.password).then((isMatch) => {
-                console.log(isMatch, 'uismatch uismatch uismatch uismatch ');
                 if (isMatch) {
                     JwtSign({ email: email, id: user._id, }, async (err, token) => {
                         if (err) {
@@ -44,7 +44,6 @@ const verifyUser = async(email, password, res)=>{
             res.status(200).json({ success: false, msg: 'Your credentails could be wrong!', type: 'no amin email match' });
         }
     }).catch((error) => {
-        console.log(error);
         res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in find user catch', error: error });
     });
 }

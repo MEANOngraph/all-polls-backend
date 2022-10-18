@@ -4,9 +4,9 @@ const validator = require('../helpers/validate');
 
 const getPollsList = async(req, res, next)=>{
     try{
-        const userId = req.params.userId;
-        if(userId){
-            const response = await pollsService.getAllPolls(userId);
+        const {id} = req.user;
+        if(id){
+            const response = await pollsService.getAllPolls(id);
             if(response){
                 return res.status(200).json({success: true, msg: 'Polls data fetch succesfully.', response: response});
             }
@@ -21,11 +21,12 @@ const getPollsList = async(req, res, next)=>{
 
 const createPoll = async(req, res, next)=>{
     try {
-        const { userId, question, options} = req.body;
+        const {question, options} = req.body.payload;
+        const {id} = req.user;
         const validationRule = {
-            "userId": "required|string",
-            "question": "required|string",
-            "options": "required"
+            // "userId": "required|string",
+            // "question": "required|string",
+            // "options": "required"
         };
 
         await validator(req.body, validationRule, {}, async (err, status) => {
@@ -37,7 +38,7 @@ const createPoll = async(req, res, next)=>{
                         data: err
                     });
             } 
-            const response = pollsService.createUserPoll(userId, question, options);
+            const response = await pollsService.createUserPoll(id, question, options);
             if(response){
                 return res.status(200).json({ success: true, msg: 'Poll created succesfully.'});
             }
@@ -71,7 +72,6 @@ const getPollDetails = async (req, res, next) => {
         const pollId = req.params.pollId;
         if(pollId){
             const response = await pollsService.getPollDetails(pollId);
-            console.log(response);
             if(response){
                 return res.status(200).json({success: true, msg: 'Poll data fetch succesfully.', response: response});
             }
@@ -124,7 +124,6 @@ const searchPolls = async (req, res, next) => {
         const query = req.params.query;
         if(query){
             const response = await pollsService.searchPollsData(query);
-            console.log('resssssss', response);
             if(response){
                 return res.status(200).json({success: true, msg: 'Search result fetch succesfully.', response: response});
             }
