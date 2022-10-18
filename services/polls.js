@@ -5,11 +5,14 @@ const getAllPolls = async (userId) => {
 }
 
 const createUserPoll = async (userId, question, options) => {
+      let value=[];
+      options.forEach((element,index) => {
+        value.push({value:element.choice,id:index+1,count:0})
+      });
     return await pollsModel.create({ 
         "userId": userId,
         "question": question,
-        "options":options,
-        "status": true
+        "options":value
     })
 }
 
