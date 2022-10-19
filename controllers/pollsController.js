@@ -86,8 +86,7 @@ const getPollDetails = async (req, res, next) => {
 
 const submitPoll = async (req, res, next) =>{
     try{
-        const { userId, pollId, selectOptId} = req.body;
-
+        const { userId, pollId, selectOptId} = req.body.payload;
         if(pollId){
             const response = await pollsService.submitPollAns(userId, pollId, selectOptId);
             if(response){
