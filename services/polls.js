@@ -1,7 +1,7 @@
 var pollsModel = require('../models/polls');
 
-const getAllPolls = async (userId) => {
-    return await pollsModel.find({ "userId": userId });
+const getAllPolls = async (filter,options) => {
+    return await pollsModel.find(filter,{},options);
 }
 
 const createUserPoll = async (userId, question, options) => {
@@ -25,7 +25,7 @@ const getPollDetails = async (pollId) => {
 }
 
 const submitPollAns = async (userId, pollId, selectOptId) => {
-    return await pollsModel.findOneAndUpdate({"_id": pollId, "userId": userId, "options[selectOptId-1].id": selectOptId}, {$set:{"options[selectOptId-1].count": 1}});
+    return await pollsModel.findOneAndUpdate({"_id": pollId, "options.id": selectOptId}, {$inc:{"options.$.count": 1}});
 }
 
 const deletePoll = async (pollId) => {

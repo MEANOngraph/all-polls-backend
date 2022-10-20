@@ -11,7 +11,7 @@ const auth = expressJwt({
 router.get('/poll-list', auth, pollsController.getPollsList);
 router.post('/create-poll', auth, pollsController.createPoll);
 router.get('/poll-status/:pollId',auth, pollsController.changePollStatus);
-router.get('/get-poll/:pollId',auth, pollsController.getPollDetails);
+router.get('/get-poll/:pollId', pollsController.getPollDetails);
 router.post('/submit-poll', pollsController.submitPoll);
 router.get('/delete-poll/:pollId',auth, pollsController.deletePoll);
 router.get('/search/:query',auth, pollsController.searchPolls);
