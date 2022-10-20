@@ -1,7 +1,7 @@
 var pollsModel = require('../models/polls');
 
-const getAllPolls = async (userId) => {
-    return await pollsModel.find({ "userId": userId });
+const getAllPolls = async (filter,options) => {
+    return await pollsModel.find(filter,{},options);
 }
 
 const createUserPoll = async (userId, question, options) => {

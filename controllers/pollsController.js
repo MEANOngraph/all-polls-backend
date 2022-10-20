@@ -5,10 +5,23 @@ const validator = require('../helpers/validate');
 const getPollsList = async(req, res, next)=>{
     try{
         const {id} = req.user;
+        let filter= { "userId": id }
+        let limit = parseInt(req.query.limit) || 10;
+        let page = parseInt(req.query.page) || 1;
+        // let search = req.query.search.trim().toLowerCase();
+        let skip = limit * (page - 1);
+        // if (search) {
+        //     filter = { "question": { $regex: search }}
+        //   }
+          let Options = {
+            limit: limit,
+            skip: skip
+          }
         if(id){
-            const response = await pollsService.getAllPolls(id);
+            const response = await pollsService.getAllPolls(filter,Options);
+            let TotalCount = await pollsService.getAllPolls(filter, {});
             if(response){
-                return res.status(200).json({success: true, msg: 'Polls data fetch succesfully.', response: response});
+                return res.status(200).json({success: true, msg: 'Polls data fetch succesfully.', response: response, count :TotalCount.length});
             }
             return res.status(200).json({success: false, msg: 'Something went wrong!'});
         }
