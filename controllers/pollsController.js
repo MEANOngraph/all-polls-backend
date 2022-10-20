@@ -99,9 +99,9 @@ const getPollDetails = async (req, res, next) => {
 
 const submitPoll = async (req, res, next) =>{
     try{
-        const { userId, pollId, selectOptId} = req.body.payload;
+        const { userId, pollId, selectOptId, visitorId} = req.body.payload;
         if(pollId){
-            const response = await pollsService.submitPollAns(userId, pollId, selectOptId);
+            const response = await pollsService.submitPollAns(userId, pollId, selectOptId, visitorId);
             if(response){
                 return res.status(200).json({success: true, msg: 'Poll submited succesfully.'});
             }

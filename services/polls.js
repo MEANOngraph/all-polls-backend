@@ -24,8 +24,8 @@ const getPollDetails = async (pollId) => {
     return await pollsModel.findOne({"_id": pollId});
 }
 
-const submitPollAns = async (userId, pollId, selectOptId) => {
-    return await pollsModel.findOneAndUpdate({"_id": pollId, "options.id": selectOptId}, {$inc:{"options.$.count": 1}});
+const submitPollAns = async (userId, pollId, selectOptId, visitorId) => {
+    return await pollsModel.findOneAndUpdate({"_id": pollId, "options.id": selectOptId}, {$inc:{"options.$.count": 1}, $push:{visitors:visitorId}});
 }
 
 const deletePoll = async (pollId) => {

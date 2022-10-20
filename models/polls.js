@@ -7,6 +7,7 @@ let polls = new Schema({
     question: { type: String, required: true },
     options: {type: Array, required: true },
     status: { type: Boolean, default: true },
+    visitors: {type: Array, required: false },
     createdAt: { type: Date, default: Date.now },
 });
 
