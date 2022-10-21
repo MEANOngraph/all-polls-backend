@@ -13,7 +13,7 @@ const addUser = async(user, res)=>{
                 if (err) {
                     return res.status(200).json({ success: false, msg: 'Something went wrong!', type: 'in token error' });
                 }
-                return res.status(200).json({ success: true, msg: 'User registration successfully.', token: token });
+                return res.status(200).json({ success: true, msg: 'User registration successfully.' });
             })
         }
     }).catch((error) => {
