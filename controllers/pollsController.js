@@ -15,7 +15,8 @@ const getPollsList = async(req, res, next)=>{
         //   }
           let Options = {
             limit: limit,
-            skip: skip
+            skip: skip,
+            sort:{ createdAt: -1 }
           }
         if(id){
             const response = await pollsService.getAllPolls(filter,Options);
