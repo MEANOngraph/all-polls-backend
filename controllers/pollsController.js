@@ -8,11 +8,11 @@ const getPollsList = async(req, res, next)=>{
         let filter= { "userId": id }
         let limit = parseInt(req.query.limit) || 10;
         let page = parseInt(req.query.page) || 1;
-        // let search = req.query.search.trim().toLowerCase();
+        let search = req.query.search.trim().toLowerCase();
         let skip = limit * (page - 1);
-        // if (search) {
-        //     filter = { "question": { $regex: search }}
-        //   }
+        if (search) {
+            filter = { "question": { $regex: search }}
+          }
           let Options = {
             limit: limit,
             skip: skip
