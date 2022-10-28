@@ -11,7 +11,7 @@ const getPollsList = async(req, res, next)=>{
         let search = req.query.search.trim().toLowerCase();
         let skip = limit * (page - 1);
         if (search) {
-            filter = { "question": { $regex: search }}
+            filter = { "question": { $regex: search },"userId": id }
           }
           let Options = {
             limit: limit,
